@@ -1,11 +1,17 @@
 <template>
-  <nav class="navbar">
-    <router-link to="/" class="logo">
-      <img alt="Vue logo" src="./assets/logo.svg" class="logo-img" />
-      <div class="logo-name">Build Collective</div>
+  <nav id="navbar" class="navbar gradient-bg">
+    <div class="nav-wrapper">
+    <router-link to="/home" class="brand-logo">
+        Open Collective
     </router-link>
-    <div class="navbar-items" v-if="store.state.account.address">
-      <router-link to="/account" class="navbar-item">Account</router-link>
+
+    <ul id="nav-mobile" class="right hide-on-med-and-down" v-if="store.state.account.address">
+        <li id="Home-nav"><router-link to="/home">Home</router-link></li>
+        <li id="Projects-nav" v-if="store.state.user.name"><router-link to="/projects">Projects</router-link></li>
+        <li id="Companies-nav" v-if="store.state.user.name"><router-link to="/companies">Companies</router-link></li>
+        <li id="Bounties-nav" v-if="store.state.user.name"><router-link to="/bounties">Bounties</router-link></li>
+        <li id="disconnect-nav"><a @click="disconnect">Disconnect</a></li>
+    </ul>
     </div>
   </nav>
   <router-view />
@@ -14,83 +20,73 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import M from 'materialize-css'
 
 export default defineComponent({
   name: 'App',
   setup() {
+    M.AutoInit()
     const store = useStore()
     return { store }
+  },
+
+  methods: {
+    async disconnect() {
+      this.store.dispatch('ethereumDisconnect').then(
+        () => this.$router.push({ name: "LogIn" })
+      )
+    },
   },
 })
 </script>
 
 <style lang="css">
-* {
-  box-sizing: border-box;
+#disconnect-nav {
+  margin-left: 1.5rem;
 }
 
-body {
-  margin: 0;
+.brand-logo {
+  margin-left: 0.5rem;
 }
 
-html {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: 600;
-  background: rgb(26, 18, 31);
-  color: rgb(255, 255, 255);
+.gradient-bg {
+  background: rgb(195, 50, 255);
+  background: linear-gradient(34deg, rgb(195, 50, 255) 0%, rgba(8,208,214,1) 100%);
 }
 
-.navbar {
-  display: flex;
-  background: rgb(30, 22, 36);
-  border-bottom: 2px solid;
-  border-image: linear-gradient(
-      to right,
-      rgba(45, 31, 54, 0.5),
-      rgba(167, 79, 236, 0.5)
-    )
-    1;
+.input-field input {
+  border-bottom: 1px solid #757575 !important;
+  box-shadow: 0 0px 0 0 #757575 !important;
+  color: #757575;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  color: inherit;
-  text-decoration: none;
-  font-variant: small-caps;
+.input-field input:focus {
+  border-bottom: 1px solid #757575 !important;
+  box-shadow: 0 0px 0 0 #757575 !important;
+  color: #757575;
 }
 
-.logo-img {
-  width: 30px;
-  margin-right: 12px;
+.input-field label {
+  color: #b3b3b3 !important;
 }
 
-.logo-name {
-  font-size: 24px;
+.input-field input:focus + label {
+  color: #757575 !important;
 }
 
-.navbar-items {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  justify-content: flex-end;
+.input-field .prefix {
+  color: #757575 !important;
 }
 
-.navbar-item {
-  padding: 12px;
-  color: inherit;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 0.8rem;
-  text-transform: uppercase;
+.input-field .prefix.active {
+  color: #757575 !important;
 }
 
-#app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.card-action a {
+  color: rgb(219, 133, 255) !important;
+}
+
+.card-action a:hover {
+  color: rgba(219, 133, 255, 0.45) !important;
 }
 </style>

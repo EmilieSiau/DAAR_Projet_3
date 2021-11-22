@@ -8,15 +8,33 @@ export default createStore({
       address: null,
       balance: 0,
     },
+    user: {
+      name: null,
+      balance: 0,
+      projects: [],
+      companies: [],
+      openedBounties: [],
+      savedBounties: []
+    },
   },
+
   mutations: {
     updateEthereum(state, { address, contract, balance }) {
       state.account.address = address
       state.account.balance = balance
       state.contract = contract
     },
+
+    updateUser(state, { name, balance, projects, companies }) {
+      state.user.name = name
+      state.user.balance = balance
+      state.user.projects = projects
+      state.user.companies = companies
+    },
   },
+
   actions: {
+
     async ethereumConnect(context) {
       const response = await Ethereum.connect()
       if (response) {
@@ -24,6 +42,11 @@ export default createStore({
         context.commit('updateEthereum', { address, contract, balance })
       }
     },
+
+    async ethereumDisconnect(context) {
+      context.commit('updateEthereum', { address: null, contract: null, balance: 0 })
+    },
+
   },
   modules: {},
 })

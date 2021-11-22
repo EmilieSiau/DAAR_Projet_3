@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import ContractInterface from '../build/contracts/BuildCollective.json'
+import ContractInterface from '../build/contracts/OpenCollective.json'
 
 const win: any = window
 
