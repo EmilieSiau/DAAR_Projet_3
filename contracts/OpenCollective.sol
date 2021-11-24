@@ -13,7 +13,8 @@ contract OpenCollective {
         string name;
         uint256 balance;
         uint64[] projects;
-        uint64[] companies;
+        uint64[] ownedCompanies;
+        uint64[] belongedCompanies;
         uint64[] openedBounties;
         uint64[] savedBounties;
     }
@@ -71,13 +72,13 @@ contract OpenCollective {
     Bounty[] private bountiesList;
 
     // --- The company id counter
-    uint private companyCounter;
+    uint64 private companyCounter;
 
     // --- The project id counter
-    uint private projectCounter;
+    uint64 private projectCounter;
 
     // --- The bounties id counter
-    uint private bountyCounter;
+    uint64 private bountyCounter;
 
 
     // ===== Constructor =====
@@ -149,7 +150,7 @@ contract OpenCollective {
     }
 
     // Function to update an user name
-    function updateUserName(string memory name) public returns (bool) {
+    function updateUser(string memory name) public returns (bool) {
         require(bytes(name).length > 0, "User name cannot be empty");
         require(users[msg.sender].addr != address(0), "You cannot update the name of an unregistered user");
 
@@ -201,6 +202,39 @@ contract OpenCollective {
         return res;
     }
 
+    // Function to register a company
+    function registerCompany(string memory name) public returns (Company memory) {
+        require(bytes(name).length > 0, "Company name cannot be empty");
+
+        companyCounter++;
+        Company memory company;
+        company.id = companyCounter;
+        company.name = name;
+        company.owner = msg.sender;
+        company.balance = 0;
+        companiesMap[companyCounter] = company;
+        users[msg.sender].ownedCompanies.push(companyCounter);
+
+        emit CompanyRegistered(companyCounter, msg.sender, name);
+    }
+
+    // Function to update a company
+    function updateCompany(uint64 id, string memory name) public returns (bool) {
+        require(bytes(name).length > 0, "User name cannot be empty");
+        require(msg.sender == companiesMap[id].owner, "Only the company owner can change the company name");
+
+        companiesMap[id].name = name;
+        return true;
+    }
+
+    // Function to remove a company
+    function removeCompany(uint64 id) public returns (bool) {
+        require(msg.sender == companiesMap[id].owner, "Only the company owner can remove the company");
+
+        delete companiesMap[id];
+        return true;
+    }
+
 
     // --- Project managment functions
 
@@ -217,6 +251,7 @@ contract OpenCollective {
         }
         return res;
     }
+
 
     // --- Bounties managment functions
 
@@ -239,16 +274,16 @@ contract OpenCollective {
         Bounty[] memory res = new Bounty[](10);
         uint ptr = 0;
         uint256 startIndex = bountiesList.length;
-        
+        int256 tmp = int256(startIndex) - 10;
+        if(tmp < 0) tmp = 0;
+        uint256 endIndex = uint256(tmp);
+
+        for(uint256 i = startIndex ; i > endIndex ; i--) {
+            res[ptr] = bountiesList[(i-1)];
+            ptr++;
+        }
+
         return res;
     }
 
-}
-
-
-// ===== Utility functions =====
-
-function max(uint256 a, uint256 b) pure returns (uint256) {
-    if(a >= b) return a;
-    return b;
 }

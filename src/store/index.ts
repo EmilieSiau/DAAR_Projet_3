@@ -12,7 +12,8 @@ export default createStore({
       name: null,
       balance: 0,
       projects: [],
-      companies: [],
+      ownedCompanies: [],
+      belongedCompanies: [],
       openedBounties: [],
       savedBounties: []
     },
@@ -25,11 +26,14 @@ export default createStore({
       state.contract = contract
     },
 
-    updateUser(state, { name, balance, projects, companies }) {
+    updateUser(state, { name, balance, projects, ownedCompanies, belongedCompanies, openedBounties, savedBounties }) {
       state.user.name = name
       state.user.balance = balance
       state.user.projects = projects
-      state.user.companies = companies
+      state.user.ownedCompanies = ownedCompanies
+      state.user.belongedCompanies = belongedCompanies
+      state.user.openedBounties = openedBounties
+      state.user.savedBounties = savedBounties
     },
   },
 

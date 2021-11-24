@@ -11,7 +11,7 @@
             </p>
 
             <div class="input-field">
-              <input id="username" type="text" v-model="username">
+              <input id="username" type="text" v-model="username" v-on:keyup.enter="register">
               <label for="username">Username</label>
             </div>
 

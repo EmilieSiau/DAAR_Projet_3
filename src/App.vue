@@ -20,12 +20,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
-import M from 'materialize-css'
 
 export default defineComponent({
   name: 'App',
   setup() {
-    M.AutoInit()
     const store = useStore()
     return { store }
   },
@@ -52,6 +50,10 @@ export default defineComponent({
 .gradient-bg {
   background: rgb(195, 50, 255);
   background: linear-gradient(34deg, rgb(195, 50, 255) 0%, rgba(8,208,214,1) 100%);
+}
+
+.fixed-action-btn .btn-floating {
+  background-color: rgb(219, 133, 255) !important;
 }
 
 .input-field input {
