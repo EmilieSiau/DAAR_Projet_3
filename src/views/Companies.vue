@@ -1,7 +1,7 @@
 <template>
   <company-details
-    :id="companyId"
     v-if="companyId != undefined && companyId != ''"
+    :id="companyId"
   ></company-details>
 
   <div class="container" v-else>
@@ -26,10 +26,8 @@
         <p class="center-align grey-text">You don't own any company for now... You can create one by clicking <a class="modal-trigger" href="#company-creation">here</a> :)</p>
       </div>
 
-      <div class="col s12" v-else>
-        <div v-for="company of ownedCompaniesObj" :key="company.id">
-          <company-card :company="company" />
-        </div>
+      <div class="col s12 m4 l3 company-card-cont" v-else v-for="company of ownedCompaniesObj" :key="company.id">
+        <company-card :company="company" />
       </div>
     </div>
 
@@ -43,10 +41,8 @@
       </div>
 
       <div class="row">
-        <div class="col s12">
-          <div v-for="company of belongedCompaniesObj" :key="company.id">
-            <company-card :company="company" />
-          </div>
+        <div v-for="company of belongedCompaniesObj" :key="company.id">
+          <company-card :company="company" />
         </div>
       </div>
     </div>
@@ -119,6 +115,10 @@ export default defineComponent({
     this.updateBelonged()
   },
 
+  updated() {
+    this.companyId = this.$route.query.id
+  },
+
   // ===== Methods =====
 
   methods: {
@@ -171,3 +171,11 @@ export default defineComponent({
   }
 })
 </script>
+
+
+<style lang="css" scoped>
+.company-card {
+  flex-grow: 0 !important;
+  flex-shrink: 1 !important;
+}
+</style>

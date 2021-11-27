@@ -50,14 +50,14 @@ router.beforeEach((to, _from, next) => {
 })
 
 router.afterEach((to, from, fail) => {
-  if(!fail) {    
+  if(!fail) {
     const navTo = document.getElementById(to.name?.toString() + "-nav")
     const navFrom = document.getElementById(from.name?.toString() + "-nav")
-    if(navTo) {
-      navTo.classList.add("active")
-    }
     if(navFrom) {
       navFrom.classList.remove("active")
+    }
+    if(navTo) {
+      navTo.classList.add("active")
     }
   }
 })
