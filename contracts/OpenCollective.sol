@@ -205,6 +205,7 @@ contract OpenCollective {
     // Function to register a company
     function registerCompany(string memory name) public returns (Company memory) {
         require(bytes(name).length > 0, "Company name cannot be empty");
+        require(users[msg.sender].addr != address(0), "You cannot create a company without user account");
 
         companyCounter++;
         Company memory company;
@@ -213,6 +214,7 @@ contract OpenCollective {
         company.owner = msg.sender;
         company.balance = 0;
         companiesMap[companyCounter] = company;
+        companiesMap[company.id].members.push(msg.sender);
         users[msg.sender].ownedCompanies.push(companyCounter);
 
         emit CompanyRegistered(companyCounter, msg.sender, name);
@@ -232,6 +234,24 @@ contract OpenCollective {
         require(msg.sender == companiesMap[id].owner, "Only the company owner can remove the company");
 
         delete companiesMap[id];
+        return true;
+    }
+
+    // Function to add a member to a company
+    function addMember(uint64 id, address member) public returns (bool) {
+        require(msg.sender == companiesMap[id].owner, "Only the company owner can add a member to the company");
+        require(users[member].addr != address(0), "You cannot add a non-existing user to a company");
+
+        companiesMap[id].members.push(member);
+        users[member].belongedCompanies.push(id);
+        return true;
+    }
+
+    // Function to remove a member from a company
+    function removeMember(uint64 id, address member) public returns (bool) {
+        require(msg.sender == companiesMap[id].owner, "Only the company owner can remove a member from the company");
+
+        require(false, "TODO");
         return true;
     }
 

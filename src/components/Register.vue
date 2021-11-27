@@ -81,4 +81,12 @@ export default defineComponent({
   margin-top: 1.7rem;
   margin-bottom: 0rem;
 }
+
+.card-action a {
+  color: rgb(219, 133, 255) !important;
+}
+
+.card-action a:hover {
+  color: rgba(219, 133, 255, 0.45) !important;
+}
 </style>

@@ -3,7 +3,7 @@
     <div class="card-content white-text">
       <span class="card-title">{{ company.name }}</span>
       <p>Balance : {{ company.balance }} ETH</p>
-      <p>{{ company.members.length + 1 }} members</p>
+      <p>{{ company.members.length }} members</p>
       <p>{{ company.projects.length }} open projects</p>
     </div>
   </div>

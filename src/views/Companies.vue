@@ -22,7 +22,7 @@
     </div>
     
     <div class="row">
-      <div class="col s12" v-if="ownedCompaniesObj.length == 0">
+      <div class="col s12" v-if="ownedCompanies.length == 0">
         <p class="center-align grey-text">You don't own any company for now... You can create one by clicking <a class="modal-trigger" href="#company-creation">here</a> :)</p>
       </div>
 
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div v-if="belongedCompaniesObj.length > 0">
+    <div v-if="belongedCompanies.length > 0">
       <div class="row">
         <div class="col s12">
           <h4 class="grey-text text-darken-3 center-align">
@@ -41,7 +41,7 @@
       </div>
 
       <div class="row">
-        <div v-for="company of belongedCompaniesObj" :key="company.id">
+        <div class="col s12 m4 l3" v-for="company of belongedCompaniesObj" :key="company.id">
           <company-card :company="company" />
         </div>
       </div>
@@ -171,11 +171,3 @@ export default defineComponent({
   }
 })
 </script>
-
-
-<style lang="css" scoped>
-.company-card {
-  flex-grow: 0 !important;
-  flex-shrink: 1 !important;
-}
-</style>

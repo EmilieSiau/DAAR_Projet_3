@@ -83,12 +83,4 @@ export default defineComponent({
 .input-field .prefix.active {
   color: #757575 !important;
 }
-
-.card-action a {
-  color: rgb(219, 133, 255) !important;
-}
-
-.card-action a:hover {
-  color: rgba(219, 133, 255, 0.45) !important;
-}
 </style>
