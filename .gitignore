@@ -25,3 +25,4 @@ pnpm-debug.log*
 /build
 package-lock.json
 package-lock
+yarn.lock
