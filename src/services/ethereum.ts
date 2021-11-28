@@ -1,3 +1,4 @@
+import { Bounty } from '@/types'
 import Web3 from 'web3'
 import ContractInterface from '../build/contracts/OpenCollective.json'
 
@@ -25,6 +26,7 @@ export const connect = async () => {
       const abi: any = ContractInterface.abi
       const address = ContractInterface.networks['5777'].address
       const contract = new web3.eth.Contract(abi, address, { from: account })
+
       return { address: account, contract, balance }
     } catch (error) {
       console.error(error)

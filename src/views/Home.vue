@@ -2,72 +2,76 @@
   <register v-if="!store.state.user.name" />
 
   <div class="container" v-else>
-    <div class="col s12">
-      <h3 class="grey-text text-darken-3 center-align">
-        Welcome (back) {{ name }} !
-      </h3>
+    <div class="row">
+      <div class="col s12">
+        <h3 class="grey-text text-darken-3 center-align">
+          Welcome (back) {{ name }} !
+        </h3>
+      </div>
     </div>
 
-    <div id="account-container" class="col s12">
-      <ul class="collapsible z-depth-0">
-        <li>
-          <div class="collapsible-header">
-            <i class="material-icons">account_balance_wallet</i>Balance :
-            {{ balance }} ETH
-          </div>
-        </li>
-
-        <li>
-          <div class="collapsible-header">
-            <i class="material-icons">arrow_downward</i>Deposit
-          </div>
-          <div class="collapsible-body">
-            <div class="input-field">
-              <input
-                id="deposit"
-                type="text"
-                v-model="deposit"
-                v-on:keyup.enter="sendDeposit"
-              />
-              <label for="deposit">Value</label>
+    <div class="row">
+      <div id="account-container" class="col s12">
+        <ul class="collapsible z-depth-0">
+          <li>
+            <div class="collapsible-header">
+              <i class="material-icons">account_balance_wallet</i>Balance :
+              {{ balance }} ETH
             </div>
-          </div>
-        </li>
+          </li>
 
-        <li>
-          <div class="collapsible-header">
-            <i class="material-icons">arrow_upward</i>Withdraw
-          </div>
-          <div class="collapsible-body">
-            <div class="input-field">
-              <input
-                id="withdraw"
-                type="text"
-                v-model="withdraw"
-                v-on:keyup.enter="sendWithdraw"
-              />
-              <label for="withdraw">Value</label>
+          <li>
+            <div class="collapsible-header">
+              <i class="material-icons">arrow_downward</i>Deposit
             </div>
-          </div>
-        </li>
+            <div class="collapsible-body">
+              <div class="input-field">
+                <input
+                  id="deposit"
+                  type="text"
+                  v-model="deposit"
+                  v-on:keyup.enter="sendDeposit"
+                />
+                <label for="deposit">Value</label>
+              </div>
+            </div>
+          </li>
 
-        <li>
-          <div class="collapsible-header">
-            <i class="material-icons">person</i>Username : {{ name }}
-          </div>
-          <div class="collapsible-body">
-            <div class="input-field">
-              <input
-                id="username"
-                type="text"
-                v-model="newName"
-                v-on:keyup.enter="sendNewName"
-              />
-              <label for="username">New username</label>
+          <li>
+            <div class="collapsible-header">
+              <i class="material-icons">arrow_upward</i>Withdraw
             </div>
-          </div>
-        </li>
-      </ul>
+            <div class="collapsible-body">
+              <div class="input-field">
+                <input
+                  id="withdraw"
+                  type="text"
+                  v-model="withdraw"
+                  v-on:keyup.enter="sendWithdraw"
+                />
+                <label for="withdraw">Value</label>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div class="collapsible-header">
+              <i class="material-icons">person</i>Username : {{ name }}
+            </div>
+            <div class="collapsible-body">
+              <div class="input-field">
+                <input
+                  id="username"
+                  type="text"
+                  v-model="newName"
+                  v-on:keyup.enter="sendNewName"
+                />
+                <label for="username">New username</label>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div
@@ -193,7 +197,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.updateUser()
+    this.updateUser()    
     this.fetchBounties()
   },
 
@@ -208,7 +212,7 @@ export default defineComponent({
 
     /** Update the user display by fetching it in the smart contract */
     async updateUser() {
-      const payload = await this.contract.methods.getUser(this.address).call()
+      const payload = await this.contract.methods.getUser(this.address).call()      
       this.store.commit('updateUser', payload)
     },
 
@@ -221,7 +225,7 @@ export default defineComponent({
         .getBounties(this.savedBounties)
         .call()
       const tmp: Bounty[] = await this.contract.methods
-        .getLastBounties(this.lastOffset++)
+        .getLastBounties(this.lastOffset)
         .call()
       this.lastBountiesObj = tmp.filter(({ id }) => id != '0')
     },

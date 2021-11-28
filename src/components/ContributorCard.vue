@@ -4,7 +4,7 @@
       <span class="card-title center-align">{{ user.name }} {{ isOwner ? '(Owner)' : '' }}</span>
     </div>
     <div v-if="removable && !isOwner" class="card-action">
-      <a @click="removeMember">Fire</a>
+      <a @click="removeContrib">Remove</a>
     </div>
   </div>
 </template>
@@ -16,13 +16,14 @@ import { User } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import M from 'materialize-css'
 
 export default defineComponent({
-  name: 'MemberCard',
+  name: 'ContributorCard',
 
   props: {
     user: User,
-    companyId: String,
+    projectId: String,
     removable: Boolean,
     isOwner: Boolean
   },
@@ -34,9 +35,8 @@ export default defineComponent({
   },
 
   methods: {
-    async removeMember() {
-      await this.contract.methods.removeMember(this.companyId, this.user?.addr).send()
-      this.$emit('removed')
+    async removeContrib() {
+      M.toast({html: 'TODO'})
     }
   },
 })

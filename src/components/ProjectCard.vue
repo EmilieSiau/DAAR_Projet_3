@@ -1,7 +1,8 @@
 <template>
-  <div class="card hoverable company-card small" @click="openDetails">
+  <div class="card hoverable small" @click="openDetails">
     <div class="card-content white-text">
       <span class="card-title">{{ project.name }}</span>
+      <p>Balance : {{ project.balance }} ETH</p>
       <p>{{ project.description }}</p>
     </div>
   </div>
@@ -33,7 +34,7 @@ export default defineComponent({
 
 <style lang="css" scoped>
 .card {
-  background-color: rgb(219, 133, 255) !important;
+  background-color: #6f79ec !important;
   cursor: pointer;
 }
 

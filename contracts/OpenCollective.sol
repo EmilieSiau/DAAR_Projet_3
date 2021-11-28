@@ -6,7 +6,6 @@ contract OpenCollective {
 
     // ===== Structure definitions =====
 
-
     // --- An user
     struct User {
         address addr;
@@ -66,6 +65,7 @@ contract OpenCollective {
 
     // --- The existing projects
     mapping(uint64 => Project) private projectsMap;
+    Project[] private projectsList;
 
     // --- The bounties
     mapping(uint64 => Bounty) private bountiesMap;
@@ -91,31 +91,7 @@ contract OpenCollective {
         projectCounter = 0;
         bountyCounter = 0;
     }
-
-
-    // ===== Logging events =====
-
-
-    // --- Log a new user
-    event UserRegistered(address addr, string name);
-
-    // --- Log a new company
-    event CompanyRegistered(uint64 id, address owner, string name);
-
-    // --- Log a new personal project
-    event NewUserPoject(uint64 id, address owner, string name);
-
-    // --- Log a new company project
-    event NewCompanyProject(uint64 id, uint64 owner, string name);
-
-    // --- Log a new bounty
-    event NewBounty(uint64 id, uint64 on, string name);
-
-    // --- Log arbitrary messages
-    event LogMsg(string msg);
-    event LogInt(uint val, string msg);
-
-
+    
     // ===== Contract functions =====
 
 
@@ -136,53 +112,40 @@ contract OpenCollective {
     }
     
     // Function to register an user in the database
-    function registerUser(string memory name) public returns (User memory) {
-        require(bytes(name).length > 0, "User name cannot be empty");
-        require(users[msg.sender].addr == address(0), "You cannot register multiple times");
+    function registerUser(string memory name) public {
+        require(bytes(name).length > 0);
+        require(users[msg.sender].addr == address(0));
 
         User memory user;
         user.name = name;
         user.addr = msg.sender;
         user.balance = 0;
         users[msg.sender] = user;
-
-        emit UserRegistered(msg.sender, name);
     }
 
     // Function to update an user name
-    function updateUser(string memory name) public returns (bool) {
-        require(bytes(name).length > 0, "User name cannot be empty");
-        require(users[msg.sender].addr != address(0), "You cannot update the name of an unregistered user");
+    // function updateUser(string memory name) public {
+    //     require(bytes(name).length > 0);
+    //     require(users[msg.sender].addr != address(0));
 
-        users[msg.sender].name = name;
-        return true;
-    }
-
-    // Remove an user from the database
-    function removeUser(address addr) public returns (bool) {
-        require(msg.sender == owner || msg.sender == addr, "You have not the permission to delete an user");
-
-        delete users[addr];
-        return true;
-    }
+    //     users[msg.sender].name = name;
+    // }
 
     // Deposit on an user acocunt
-    function deposit() public payable returns (bool) {
-        require(users[msg.sender].addr != address(0), "You cannot deposite on the count of an unregistered user");
+    function deposit() public payable {
+        require(users[msg.sender].addr != address(0));
 
         users[msg.sender].balance += msg.value;
-        return true;
     }
 
     // Withdraw from an user account
-    function withdraw(uint val) public returns (bool) {
-        require(users[msg.sender].addr != address(0), "You cannot withdraw on the count of an unregistered user");
-        require(users[msg.sender].balance >= val, "Insuficient funds to withdraw");
+    function withdraw(uint val) public {
+        require(users[msg.sender].addr != address(0));
+        require(users[msg.sender].balance >= val);
         
         users[msg.sender].balance -= val;
 
         address payable wal = address(uint160(msg.sender));
-        wal.transfer(val);
     }
 
 
@@ -203,9 +166,9 @@ contract OpenCollective {
     }
 
     // Function to register a company
-    function registerCompany(string memory name) public returns (Company memory) {
-        require(bytes(name).length > 0, "Company name cannot be empty");
-        require(users[msg.sender].addr != address(0), "You cannot create a company without user account");
+    function registerCompany(string memory name) public {
+        require(bytes(name).length > 0);
+        require(users[msg.sender].addr != address(0));
 
         companyCounter++;
         Company memory company;
@@ -216,43 +179,53 @@ contract OpenCollective {
         companiesMap[companyCounter] = company;
         companiesMap[company.id].members.push(msg.sender);
         users[msg.sender].ownedCompanies.push(companyCounter);
-
-        emit CompanyRegistered(companyCounter, msg.sender, name);
-    }
-
-    // Function to update a company
-    function updateCompany(uint64 id, string memory name) public returns (bool) {
-        require(bytes(name).length > 0, "User name cannot be empty");
-        require(msg.sender == companiesMap[id].owner, "Only the company owner can change the company name");
-
-        companiesMap[id].name = name;
-        return true;
-    }
-
-    // Function to remove a company
-    function removeCompany(uint64 id) public returns (bool) {
-        require(msg.sender == companiesMap[id].owner, "Only the company owner can remove the company");
-
-        delete companiesMap[id];
-        return true;
     }
 
     // Function to add a member to a company
-    function addMember(uint64 id, address member) public returns (bool) {
-        require(msg.sender == companiesMap[id].owner, "Only the company owner can add a member to the company");
-        require(users[member].addr != address(0), "You cannot add a non-existing user to a company");
+    function addMember(uint64 id, address member) public {
+        require(msg.sender == companiesMap[id].owner);
+        require(users[member].addr != address(0));
 
         companiesMap[id].members.push(member);
         users[member].belongedCompanies.push(id);
-        return true;
     }
 
     // Function to remove a member from a company
-    function removeMember(uint64 id, address member) public returns (bool) {
-        require(msg.sender == companiesMap[id].owner, "Only the company owner can remove a member from the company");
+    function removeMember(uint64 id, address member) public {
+        require(msg.sender == companiesMap[id].owner);
+        require(member != companiesMap[id].owner);
 
-        require(false, "TODO");
-        return true;
+        // Delete the member from the company
+        address[] memory newMembers = new address[](companiesMap[id].members.length-1);
+        bool found = false;
+
+        for(uint256 i = 0 ; i < companiesMap[id].members.length ; i++) {
+            if(companiesMap[id].members[i] == member) {
+                found = true;
+            } else {
+                if(!found) newMembers[i] = companiesMap[id].members[i];
+                else newMembers[i-1] = companiesMap[id].members[i];
+            }
+        }
+
+        companiesMap[id].members = newMembers;
+
+        // Delete the company in the user belonged company
+        if(users[member].addr != address(0)) {
+            uint64[] memory newBelonged = new uint64[](users[member].belongedCompanies.length-1);
+            found = false;
+
+            for(uint256 i = 0 ; i < users[member].belongedCompanies.length ; i++) {
+                if(users[member].belongedCompanies[i] == id) {
+                    found = true;
+                } else {
+                    if(!found) newBelonged[i] = users[member].belongedCompanies[i];
+                    else newBelonged[i-1] = users[member].belongedCompanies[i];
+                }
+            }
+
+            users[member].belongedCompanies = newBelonged;
+        }
     }
 
 
@@ -272,13 +245,115 @@ contract OpenCollective {
         return res;
     }
 
+    // Function to get the 10 last bounties
+    function getLastProjects(uint offset) public view returns (Project[] memory) {
+        Project[] memory res = new Project[](10);
+        uint ptr = 0;
+        uint256 startIndex = projectsList.length - (offset * 10);
+        int256 tmp = int256(startIndex) - 10;
+        if(tmp < 0) tmp = 0;
+        uint256 endIndex = uint256(tmp);
+
+        for(uint256 i = startIndex ; i > endIndex ; i--) {
+            res[ptr] = projectsList[(i-1)];
+            ptr++;
+        }
+
+        return res;
+    }
+
+    // Function to add a contributor to a project
+    function addContrib(uint64 id, address user) public {
+        require(msg.sender == projectsMap[id].userOwner);
+        require(users[user].addr != address(0));
+
+        projectsMap[id].contributors.push(user);
+        users[user].projects.push(id);
+    }
+
+    // Function to remove a contributor from a project
+    // function removeContrib(uint64 id, address user) public {
+    //     require(msg.sender == projectsMap[id].userOwner);
+    //     require(user != projectsMap[id].userOwner);
+
+    //     // Delete the member from the company
+    //     address[] memory newContrib = new address[](projectsMap[id].contributors.length-1);
+    //     bool found = false;
+
+    //     for(uint256 i = 0 ; i < projectsMap[id].contributors.length ; i++) {
+    //         if(projectsMap[id].contributors[i] == user) {
+    //             found = true;
+    //         } else {
+    //             if(!found) newContrib[i] = projectsMap[id].contributors[i];
+    //             else newContrib[i-1] = projectsMap[id].contributors[i];
+    //         }
+    //     }
+
+    //     projectsMap[id].contributors = newContrib;
+
+    //     // Delete the project from the user projects
+    //     if(users[user].addr != address(0)) {
+    //         uint64[] memory newProjects = new uint64[](users[user].projects.length-1);
+    //         found = false;
+
+    //         for(uint256 i = 0 ; i < users[user].projects.length ; i++) {
+    //             if(users[user].projects[i] == id) {
+    //                 found = true;
+    //             } else {
+    //                 if(!found) newProjects[i] = users[user].projects[i];
+    //                 else newProjects[i-1] = users[user].projects[i];
+    //             }
+    //         }
+
+    //         users[user].projects = newProjects;
+    //     }
+    // }
+
+    // Function to create a project for a user
+    function createProject(string memory name, string memory description) public {
+        require(users[msg.sender].addr != address(0));
+        require(bytes(name).length > 0);
+        require(bytes(description).length > 0);
+
+        projectCounter++;
+        Project memory project;
+        project.id = projectCounter;
+        project.name = name;
+        project.description = description;
+        project.balance = 0;
+        project.companyOwner = 0;
+        project.userOwner = msg.sender;
+        projectsMap[projectCounter] = project;
+        projectsMap[projectCounter].contributors.push(msg.sender);
+        users[msg.sender].projects.push(projectCounter);
+        projectsList.push(project);
+    }
+
+    // Function to create a project for a company
+    function createCompanyProject(uint64 company, string memory name, string memory description) public {
+        require(msg.sender == companiesMap[company].owner);
+        require(bytes(name).length > 0);
+        require(bytes(description).length > 0);
+
+        projectCounter++;
+        Project memory project;
+        project.id = projectCounter;
+        project.name = name;
+        project.description = description;
+        project.balance = 0;
+        project.companyOwner = company;
+        projectsMap[projectCounter] = project;
+        companiesMap[company].projects.push(projectCounter);
+        projectsList.push(project);
+    }
+
 
     // --- Bounties managment functions
 
     // Function to get a single bounty
-    function getBounty(uint64 id) public view returns (Bounty memory) {
-        return bountiesMap[id];
-    }
+    // function getBounty(uint64 id) public view returns (Bounty memory) {
+    //     return bountiesMap[id];
+    // }
 
     // Function to get the a list of bounty
     function getBounties(uint64[] memory ids) public view returns (Bounty[] memory) {
@@ -293,7 +368,7 @@ contract OpenCollective {
     function getLastBounties(uint offset) public view returns (Bounty[] memory) {
         Bounty[] memory res = new Bounty[](10);
         uint ptr = 0;
-        uint256 startIndex = bountiesList.length;
+        uint256 startIndex = bountiesList.length - (offset * 10);
         int256 tmp = int256(startIndex) - 10;
         if(tmp < 0) tmp = 0;
         uint256 endIndex = uint256(tmp);

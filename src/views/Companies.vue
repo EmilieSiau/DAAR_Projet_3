@@ -23,7 +23,7 @@
     
     <div class="row">
       <div class="col s12" v-if="ownedCompanies.length == 0">
-        <p class="center-align grey-text">You don't own any company for now... You can create one by clicking <a class="modal-trigger" href="#company-creation">here</a> :)</p>
+        <p class="center-align grey-text">You don't own any company for now... <b>You can create one by clicking <a class="modal-trigger" href="#company-creation">here</a> :)</b></p>
       </div>
 
       <div class="col s12 m4 l3 company-card-cont" v-else v-for="company of ownedCompaniesObj" :key="company.id">
@@ -55,7 +55,7 @@
             id="name"
             type="text"
             v-model="name"
-            v-on:keyup.enter="sendWithdraw"
+            v-on:keyup.enter="reigsterCompany"
           />
           <label for="name">Name</label>
         </div>
@@ -65,12 +65,12 @@
         <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
       </div>
     </div>
-  </div>
 
-  <div class="fixed-action-btn">
-    <a class="btn-floating btn-large modal-trigger tooltipped" data-position="left" data-tooltip="Create a company" href="#company-creation">
-      <i class="large material-icons">add</i>
-    </a>
+    <div class="fixed-action-btn">
+      <a class="btn-floating btn-large modal-trigger tooltipped" data-position="left" data-tooltip="Create a company" href="#company-creation">
+        <i class="large material-icons">add</i>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -92,7 +92,7 @@ export default defineComponent({
   components: { CompanyDetails, CompanyCard },
 
   setup() {
-    const store = useStore()
+    const store = useStore()    
     const ownedCompanies = computed(() => store.state.user.ownedCompanies)
     const belongedCompanies = computed(() => store.state.user.belongedCompanies)
     const contract = computed(() => store.state.contract)
@@ -110,12 +110,13 @@ export default defineComponent({
 
   mounted() {
     M.Modal.init(document.querySelectorAll(".modal"))
-    M.Tooltip.init(document.querySelectorAll(".tooltipped"))
     this.updateOwned()
     this.updateBelonged()
   },
 
   updated() {
+    document.querySelectorAll(".material-tooltip").forEach((e) => e.remove())
+    M.Tooltip.init(document.querySelectorAll(".tooltipped"))
     this.companyId = this.$route.query.id
   },
 
@@ -123,13 +124,11 @@ export default defineComponent({
 
   methods: {
 
-    // --- Form methods
-
     // --- Display update methods
 
     /** Update the user display by fetching it in the smart contract */
     async updateUser() {
-      const payload = await this.contract.methods.getUser(this.address).call()
+      const payload = await this.contract.methods.getUser(this.address).call()      
       this.store.commit('updateUser', payload)
     },
 
@@ -158,7 +157,7 @@ export default defineComponent({
         .then(() => {
           const modalElem = document.getElementById("company-creation")
           if(modalElem != null) M.Modal.getInstance(modalElem).close()
-          this.updateUser().then(() => {this.updateOwned().then(this.$forceUpdate)})
+          this.updateUser().then(this.updateOwned)
         })
         .catch((e: Error) => {
           console.error(e)

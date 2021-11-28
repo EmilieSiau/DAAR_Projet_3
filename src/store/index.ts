@@ -29,11 +29,11 @@ export default createStore({
     updateUser(state, { name, balance, projects, ownedCompanies, belongedCompanies, openedBounties, savedBounties }) {
       state.user.name = name
       state.user.balance = balance
-      state.user.projects = projects
-      state.user.ownedCompanies = ownedCompanies
-      state.user.belongedCompanies = belongedCompanies
-      state.user.openedBounties = openedBounties
-      state.user.savedBounties = savedBounties
+      state.user.projects = projects ? projects : []
+      state.user.ownedCompanies = ownedCompanies ? ownedCompanies : []
+      state.user.belongedCompanies = belongedCompanies ? belongedCompanies : []
+      state.user.openedBounties = openedBounties ? openedBounties : []
+      state.user.savedBounties = savedBounties ? savedBounties : []
     },
   },
 

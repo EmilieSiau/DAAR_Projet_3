@@ -1,5 +1,5 @@
 <template>
-  <div class="card hoverable company-card small" @click="openDetails">
+  <div class="card hoverable small" @click="openDetails">
     <div class="card-content white-text">
       <span class="card-title">{{ bounty.name }}</span>
       <p>Reward : {{ bounty.reward }} ETH</p>
@@ -34,7 +34,7 @@ export default defineComponent({
 
 <style lang="css" scoped>
 .card {
-  background-color: rgb(219, 133, 255) !important;
+  background-color: #0aced7 !important;
   cursor: pointer;
 }
 

@@ -1,4 +1,5 @@
 export class User {
+    addr: string
     name: string
     balance: string
     projects: string[]
@@ -8,6 +9,7 @@ export class User {
     savedBounties: string[]
 
     constructor() {
+        this.addr = ''
         this.name = ''
         this.balance = ''
         this.projects = []
