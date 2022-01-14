@@ -1,17 +1,9 @@
-# Build Collective
+# OpenCollective
 
-Welcome to the DAAR project. The idea will be to implement an OpenCollective competitor
-in a decentralized way, on Ethereum. This will have cool side effects, like not
-be forced to pay for servers.
+Authors : Emilie SIAU and Hugo GUERRIER \
+Lisence : MIT\
 
 # Installation
-
-```bash
-# With HTTPS
-git clone https://github.com/ghivert/build-collective.git
-# Or with SSH
-git clone git@github.com:ghivert/build-collective.git
-```
 
 You’ll need to install dependencies. You’ll need [`Ganache`](https://www.trufflesuite.com/ganache), [`Node.js`](https://nodejs.org/en/) and [`NPM`](https://www.npmjs.com/) or [`Yarn`](https://yarnpkg.com/). You’ll need to install [`Metamask`](https://metamask.io/) as well to communicate with your blockchain.
 
@@ -70,21 +62,18 @@ npm run serve
 
 You’re good to go!
 
-# Subject
+# What is persent
 
-Implement an OpenCollective from scratch in Solidity.
+- User account creation
+- User deposit and withdraw
+- Company account creation
+- Company members management
+- User project creation
+- Company project creation
+- Project contributors management
 
-# Smart Contract
+# What is missing
 
-- Open user account, with a name and a balance.
-- Open an entreprise account, with a name, an owner and some members, possibly with a balance.
-- Create projects on which we can give money for sponsoring. Each project has a balance, a name and a list of contributors. Each project belongs to a user or an entreprise. The money given to the project can be send to contributors, and contributors only.
-- On a project, you should be able to create bounties. Bounties are bugs with a reward: if you spot a bug and you want to have it fix quickly, open a bounty and put some eth on it. When the fix is pushed, the author will get the eth. He’s a bounty hunter.
-- Add the ability to put some link to commits from GitHub or GitLab in the projects, to keep a track of what has been done.
-
-# Front
-
-- Create a page to open a user account. Remember, each user is identified by its wallet address.
-- Create a page to open an entreprise account.
-- Create a page to create a project.
-- Create a page to get a full recap of everything that happened on a project as a timeline.
+- The bounties system
+- Project git syncing
+- Project payment to contibutors
